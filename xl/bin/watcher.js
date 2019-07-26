@@ -11,8 +11,5 @@ export default class Watcher {
 
     update(  ){
         console.log('update 视图。');
-        // this.dep[name].forEach( d => {
-        //     d();
-        // });
     }
 }

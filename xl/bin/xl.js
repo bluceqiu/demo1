@@ -1,6 +1,5 @@
 
-import obs from "./observer"
-debugger
+import observer from "./observer"
 
 export default class XL {
     constructor (options){
