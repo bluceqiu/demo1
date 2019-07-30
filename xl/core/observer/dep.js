@@ -1,5 +1,3 @@
-
-
 export default class Dep {
     constructor(){
         this.subs = []
@@ -28,3 +26,17 @@ export default class Dep {
 
 }
 
+
+Dep.target = null;
+const targetStack = [];
+
+export function pushTarget( _target ){
+    if( Dep.target ){
+        targetStack.push( Dep.target );
+    }
+    Dep.target = _target;
+}
+
+export function popTarget(){
+    targetStack.pop();
+}
