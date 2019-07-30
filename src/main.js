@@ -16,12 +16,6 @@
 // })
 
 import XL from '../xl/bin/xl'
-// import * as circle from '../xl/bin/xl';
-debugger
-new XL();
-// console.log( XL(2) );
-// console.log('圆面积：' + circle.area(4));
-// console.log('圆周长：' + circle.circumference(14));
 
 
 new XL( {
