@@ -4,9 +4,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>demo1</title>
+    <script src="MVVM.js"></script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+        <input type="text" v-model="frame.age">
+        <div>{{ frame.frameName }}</div>
+    </div>
+
+    <script>
+      new Xl({
+        el: "#app",
+        data(){
+          return {
+            frame: {
+              frameName: 'xl',
+              age: 18
+            }
+          }
+        }
+      });
+    </script>
     <!-- built files will be auto injected -->
   </body>
 </html>

@@ -18,10 +18,16 @@
 import XL from '../xl/bin/xl'
 
 
-new XL( {
-  a: [ 1, 2 ],
-  b: {
-      m: 'hello',
-      n: true
-  }
-} )
+// new XL( {
+//   el: '#app',
+//   data: ()=>{
+//     return {
+//       a: [ 1, 2 ],
+//       b: {
+//           m: 'hello',
+//           n: true
+//       }
+//     }
+//   }
+
+// } )
