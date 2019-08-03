@@ -1,3 +1,5 @@
+import { connect } from "tls";
+
 class Compiler{
     constructor(el, vm){
         this.el = this.isElementNode(el) ? el : document.querySelector(el);
@@ -38,8 +40,8 @@ class Compiler{
 
     compileText(node){
         let content = node.textContent;
-        if(/\{\{.+?\}\}/.test(content)){ // ? 为非贪婪模式
-            console.log(content);
+        if(/\{\{(.+?)\}\}/.test(content)){ // ? 为非贪婪模式
+            CompileUtil[text](node, content, this.vm);
         }
     }
 
@@ -65,14 +67,30 @@ CompileUtil = {
         }, vm.$data() );
     },
     model (node, expr, vm){
-        node.value = this.getValue(expr, vm);
-        // node.value = 
+        let fn = this.updater['modelUpdater'];
+        let value = this.getValue(expr, vm);
+        fn(node, value);
     },
-    text(){
-
+    text(node, expr, vm){
+        let fn = this.updater['textUpdater'];
+        let content =  expr.replace(/\{\{(.+?)\}\}/g, (...args)=>{
+            this.getValue(args, vm);
+        })
+        fn(node, content);
     },
     html(){
 
+    },
+    updater: {
+        modelUpdater(node, value){
+            node.value = value;
+        },
+        htmlUpdater(){
+
+        },
+        textUpdater(node, value){
+            node.textContent = value;
+        }
     }
 }
 
