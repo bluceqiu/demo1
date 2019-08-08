@@ -202,7 +202,21 @@ class Xl{
             console.log(this.$data);
             console.log(this);
             window.vm = this;
+            this.proxyVm(this.$data);
             new Compiler(this.$el, this);
+        }
+    }
+
+    proxyVm(data){
+        for (let key in data) {
+            Object.defineProperty(this, key, {
+                get(){
+                    return data[key]
+                },
+                set(newVal){
+                    data[key] = newVal;
+                }
+            });
         }
     }
 
