@@ -1,4 +1,38 @@
-import { connect } from "tls";
+
+class Watcher {
+    constructor(){
+
+    }
+}
+
+class Observer {
+    constructor(data){
+        this.Observe(data);
+    }
+
+    Observe(data){
+        if(data && typeof data === 'object'){
+            for (const key in data) {
+                this.defineReactive(data, key, data[key]);
+            }
+        }
+    }
+
+    defineReactive(data, name, value){
+        this.Observe(value);
+        Object.defineProperty(data, name, {
+            get(){
+                return value;
+            },
+            set:(newVal)=>{
+                if(newVal != value){
+                    this.Observe(newVal);
+                    value = newVal;
+                }
+            }
+        });
+    }
+}
 
 class Compiler{
     constructor(el, vm){
@@ -41,7 +75,7 @@ class Compiler{
     compileText(node){
         let content = node.textContent;
         if(/\{\{(.+?)\}\}/.test(content)){ // ? 为非贪婪模式
-            CompileUtil[text](node, content, this.vm);
+            CompileUtil['text'](node, content, this.vm);
         }
     }
 
@@ -64,7 +98,7 @@ CompileUtil = {
     getValue (expr, vm){
         return expr.split('.').reduce((data, current)=>{
             return data[current];
-        }, vm.$data() );
+        }, vm.$data );
     },
     model (node, expr, vm){
         let fn = this.updater['modelUpdater'];
@@ -74,7 +108,7 @@ CompileUtil = {
     text(node, expr, vm){
         let fn = this.updater['textUpdater'];
         let content =  expr.replace(/\{\{(.+?)\}\}/g, (...args)=>{
-            this.getValue(args, vm);
+            return this.getValue(args[1].trim(), vm);
         })
         fn(node, content);
     },
@@ -95,12 +129,16 @@ CompileUtil = {
 }
 
 
+
+
 class Xl{
     constructor(options){
         this.$el = options.el;
         this.$data = options.data;
 
         if(this.$el){
+            new Observer(this.$data);
+            console.log(this.$data);
             new Compiler(this.$el, this)
         }
     }
