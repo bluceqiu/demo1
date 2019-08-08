@@ -199,8 +199,6 @@ class Xl{
 
         if(this.$el){
             new Observer(this.$data);
-            console.log(this.$data);
-            console.log(this);
             window.vm = this;
             this.proxyVm(this.$data);
             new Compiler(this.$el, this);
