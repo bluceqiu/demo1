@@ -105,7 +105,8 @@ class Compiler{
             let {name, value:expr} = attr;
             if(this.isDirective(name)){
                 let [,directive] = name.split('-');
-                CompileUtil[directive](node, expr, this.vm);
+                let [directiveName, eventName] = directive.split(':');
+                CompileUtil[directiveName](node, expr, this.vm, eventName);
             }
         });
     }
@@ -146,6 +147,11 @@ CompileUtil = {
             return data[current];
         }, vm.$data );
     },
+    on(node, expr, vm, eventName){
+        node.addEventListener(eventName, (e)=>{
+            vm[expr].call(vm, e);
+        });
+    },
     model (node, expr, vm){
         let fn = this.updater['modelUpdater'];
         new Watcher(vm, expr, (newVal)=>{ // 给输入框添加观察者， 数据更新的时候执行
@@ -173,15 +179,20 @@ CompileUtil = {
         })
         fn(node, content);
     },
-    html(){
-
+    html(node, expr, vm){
+        let fn = this.updater['htmlUpdater'];
+        new Watcher(vm, expr, (newVal)=>{ // 给输入框添加观察者， 数据更新的时候执行
+            fn(node, newVal);
+        });
+        let value = this.getValue(expr, vm);
+        fn(node, value);
     },
     updater: {
         modelUpdater(node, value){
             node.value = value;
         },
-        htmlUpdater(){
-
+        htmlUpdater(node, value){
+            node.innerHTML = value;
         },
         textUpdater(node, value){
             node.textContent = value;
@@ -196,10 +207,33 @@ class Xl{
     constructor(options){
         this.$el = options.el;
         this.$data = options.data;
+        this.$computed = options.computed;
+        this.$methods = options.methods;
 
         if(this.$el){
             new Observer(this.$data);
             window.vm = this;
+
+            if(this.$computed){
+                for (let key in this.$computed) {
+                    Object.defineProperty(this.$data, key, {
+                        get: ()=>{
+                            return this.$computed[key].call(this);
+                        }
+                    });
+                }
+            }
+
+            if(this.$methods){
+                for (let key in this.$methods) {
+                    Object.defineProperty(this, key, {
+                        get: ()=>{
+                            return this.$methods[key];  //这里应该是返回一个方法， 不能call(this)
+                        }
+                    });
+                }
+            }
+
             this.proxyVm(this.$data);
             new Compiler(this.$el, this);
         }

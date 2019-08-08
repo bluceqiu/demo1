@@ -9,8 +9,11 @@
   <body>
     <div id="app">
         <input type="text" v-model="frame.age">
-        <div>{{frame.name}}:{{frame.age}}</div>
+        <div>{{frame.name}}:{{frame.age}}:{{ getType }}</div>
         {{ruok}}
+        <div>test computed：{{ getType }}</div>
+        <button v-on:click='refresh'>刷新</button>
+        <div v-html="message"></div>
     </div>
 
     <script>
@@ -21,8 +24,19 @@
               name: 'xl',
               age: 18
             },
-            ruok: 'yes'
+            ruok: 'yes',
+            message: '<h1>马杀鸡</h1>'
+        },
+        computed: {
+          getType(){
+            return this.frame.age + " is a superman"
           }
+        },
+        methods: {
+          refresh(e){
+            this.frame.age++;
+          }
+        },
       });
     </script>
     <!-- built files will be auto injected -->
