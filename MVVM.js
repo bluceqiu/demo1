@@ -1,9 +1,44 @@
-
-class Watcher {
+// 被观察者  发布者  （观察者模式包含发布订阅模式）
+class Dep{
     constructor(){
+        this.subs = [];
+    }
+    addSub(watcher){
+        this.subs.push(watcher);
+    }
 
+    notify(){
+        this.subs.forEach(w=>{
+            w.update();
+        });
     }
 }
+
+// 观察者  订阅者
+class Watcher {
+    constructor(vm, expr, cb){
+        this.vm = vm;
+        this.expr = expr;
+        this.cb = cb;
+
+        this.oldVal = this.get();
+    }
+
+    get(){
+        Dep.target = this;
+        var oldVal = CompileUtil.getValue(this.expr, this.vm);
+        Dep.target = null;
+        return oldVal;
+    }
+
+    update(){
+        var newVal = CompileUtil.getValue(this.expr, this.vm);
+        if(newVal !== this.oldVal){
+            this.cb(newVal);
+        }
+    }
+}
+
 
 class Observer {
     constructor(data){
@@ -20,14 +55,17 @@ class Observer {
 
     defineReactive(data, name, value){
         this.Observe(value);
+        let dep = new Dep();
         Object.defineProperty(data, name, {
             get(){
+                Dep.target &&  dep.addSub(Dep.target);
                 return value;
             },
             set:(newVal)=>{
                 if(newVal != value){
                     this.Observe(newVal);
                     value = newVal;
+                    dep.notify();
                 }
             }
         });
@@ -100,14 +138,37 @@ CompileUtil = {
             return data[current];
         }, vm.$data );
     },
+    setValue(vm, expr, value){
+        expr.split('.').reduce((data, current, index, arr)=>{
+            if(index == arr.length-1){
+                return data[current] = value;
+            }
+            return data[current];
+        }, vm.$data );
+    },
     model (node, expr, vm){
         let fn = this.updater['modelUpdater'];
+        new Watcher(vm, expr, (newVal)=>{ // 给输入框添加观察者， 数据更新的时候执行
+            fn(node, newVal);
+        });
+        node.addEventListener('input', (e)=>{
+            let value = e.target.value;
+            this.setValue(vm, expr, value);
+        });
         let value = this.getValue(expr, vm);
         fn(node, value);
+    },
+    getContentValue(vm, expr){
+        return expr.replace(/\{\{(.+?)\}\}/g, (...args)=>{
+            return this.getValue(args[1].trim(), vm);
+        })
     },
     text(node, expr, vm){
         let fn = this.updater['textUpdater'];
         let content =  expr.replace(/\{\{(.+?)\}\}/g, (...args)=>{
+            new Watcher(vm, args[1].trim(), (newVal)=>{ // 给文本添加观察者， 数据更新的时候执行
+                fn(node, this.getContentValue(vm, expr));
+            });
             return this.getValue(args[1].trim(), vm);
         })
         fn(node, content);
@@ -139,7 +200,9 @@ class Xl{
         if(this.$el){
             new Observer(this.$data);
             console.log(this.$data);
-            new Compiler(this.$el, this)
+            console.log(this);
+            window.vm = this;
+            new Compiler(this.$el, this);
         }
     }
 

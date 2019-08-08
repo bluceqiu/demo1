@@ -9,7 +9,8 @@
   <body>
     <div id="app">
         <input type="text" v-model="frame.age">
-        <div>{{ frame.frameName }}</div>
+        <div>{{frame.name}}:{{frame.age}}</div>
+        {{ruok}}
     </div>
 
     <script>
@@ -17,9 +18,10 @@
         el: "#app",
         data:{
             frame: {
-              frameName: 'xl',
+              name: 'xl',
               age: 18
-            }
+            },
+            ruok: 'yes'
           }
       });
     </script>
