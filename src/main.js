@@ -1,33 +1,23 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Xl from '../lib/mvvm/MVVM'
 
-// import Vue from 'vue'
-// import App from './App'
-// import router from './router'
-
-// Vue.config.productionTip = false
-
-// /* eslint-disable no-new */
-// new Vue({
-//   el: '#app',
-//   router,
-//   components: { App },
-//   template: '<App/>'
-// })
-
-import XL from '../xl/bin/xl'
-
-
-// new XL( {
-//   el: '#app',
-//   data: ()=>{
-//     return {
-//       a: [ 1, 2 ],
-//       b: {
-//           m: 'hello',
-//           n: true
-//       }
-//     }
-//   }
-
-// } )
+new Xl({
+    el: "#app",
+    data:{
+        frame: {
+          name: 'xl',
+          age: 18
+        },
+        ruok: 'yes',
+        message: '<h1>马杀鸡</h1>'
+    },
+    computed: {
+      getType(){
+        return this.frame.age + " is a superman"
+      }
+    },
+    methods: {
+      refresh(e){
+        this.frame.age++;
+      }
+    },
+  });

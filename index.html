@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>demo1</title>
-    <script src="MVVM.js"></script>
+    <!-- <script src="MVVM.js"></script> -->
   </head>
   <body>
     <div id="app">
@@ -17,27 +17,27 @@
     </div>
 
     <script>
-      new Xl({
-        el: "#app",
-        data:{
-            frame: {
-              name: 'xl',
-              age: 18
-            },
-            ruok: 'yes',
-            message: '<h1>马杀鸡</h1>'
-        },
-        computed: {
-          getType(){
-            return this.frame.age + " is a superman"
-          }
-        },
-        methods: {
-          refresh(e){
-            this.frame.age++;
-          }
-        },
-      });
+      // new Xl({
+      //   el: "#app",
+      //   data:{
+      //       frame: {
+      //         name: 'xl',
+      //         age: 18
+      //       },
+      //       ruok: 'yes',
+      //       message: '<h1>马杀鸡</h1>'
+      //   },
+      //   computed: {
+      //     getType(){
+      //       return this.frame.age + " is a superman"
+      //     }
+      //   },
+      //   methods: {
+      //     refresh(e){
+      //       this.frame.age++;
+      //     }
+      //   },
+      // });
     </script>
     <!-- built files will be auto injected -->
   </body>
