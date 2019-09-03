@@ -8,7 +8,7 @@ new Xl({
           age: 18
         },
         ruok: 'yes',
-        message: '<h1>马杀鸡</h1>'
+        message: '<h5>马杀鸡</h5>'
     },
     computed: {
       getType(){
